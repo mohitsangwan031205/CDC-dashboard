@@ -12,6 +12,7 @@ The application uses secure authentication, server-side rendering, and internal 
 - Protected admin routes
 ## Dummy admin credentials
 email id :- admin@dummy.com
+
 password :- 123dummy
 
 ### 📊 Dashboard Overview
