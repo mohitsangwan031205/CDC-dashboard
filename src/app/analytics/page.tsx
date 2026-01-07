@@ -23,10 +23,9 @@ export default async function AnalyticsPage() {
       <div className="mx-auto max-w-7xl space-y-8">
 
         {/* Header */}
-        <div className="flex md:flex-row justify-between">
+        <div className="flex md:flex-row justify-between items-start gap-4">
           <div>
-            
-            <h1 className="text-3xl font-semibold text-zinc-100 mt-1">
+            <h1 className="text-3xl font-semibold text-zinc-100">
               Analytics
             </h1>
             <p className="text-zinc-400 text-sm mt-1">
@@ -48,9 +47,16 @@ export default async function AnalyticsPage() {
           ← Back to Dashboard
         </Link>
 
-        {/* Analytics */}
+        {/* Analytics Layout */}
         {products.length > 0 ? (
-          <AnalyticsCharts products={products} />
+          <div
+            className="
+              grid grid-cols-1 md:grid-cols-2 gap-6
+              [&>*:first-child]:md:col-span-2
+            "
+          >
+            <AnalyticsCharts products={products} />
+          </div>
         ) : (
           <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-10 text-center text-zinc-400">
             No inventory data available.
