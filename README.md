@@ -66,4 +66,4 @@ src/
 ```
 
 ## Deployment
-https://yhills-admin-dashboard.netlify.app/
+https://cdc-dashboard-gamma.vercel.app/
