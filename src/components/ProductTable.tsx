@@ -190,7 +190,7 @@ export default function ProductTable({ products }: { products: Product[] }) {
                   <img
                     src={product.images?.[0] || "/profile.jpg"}
                     className="w-12 h-12 rounded-md border border-zinc-700"
-                    alt={product.name}
+                    alt={product.title}
                   />
                   <div>
                     <p className="font-medium text-white">
