@@ -10,7 +10,6 @@ The application uses secure authentication, server-side rendering, and internal 
 ### 🔐 Admin Authentication
 - Secure, cookie-based authentication
 - Protected admin routes
-- 
 ## Dummy admin credentials
 email id :- admin@example.com
 password :- admin123
