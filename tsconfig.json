@@ -4,8 +4,6 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "dist",
-    "rootDir": "src",
 
     "skipLibCheck": true,
     "strict": true,
@@ -17,22 +15,24 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+
     "plugins": [
       {
         "name": "next"
       }
     ],
+
     "paths": {
       "@/*": ["./src/*"]
     }
   },
+
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+
+  "exclude": ["node_modules", ".next"]
 }
+
