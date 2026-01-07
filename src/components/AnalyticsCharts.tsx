@@ -14,11 +14,11 @@ import {
   Line,
 } from "recharts";
 
-/* Muted amber + neutral palette */
+/* Muted amber + neutral palette (UNCHANGED) */
 const COLORS = ["#f59e0b", "#71717a", "#a1a1aa"];
 
 export default function AnalyticsCharts({ products }: { products: any[] }) {
-  /* ---------------- KPI METRICS (UNCHANGED) ---------------- */
+  /* ---------------- KPI METRICS ---------------- */
   const totalRevenue = products.reduce(
     (sum, p) => sum + p.unitPrice * (p.unitsSold || 0),
     0
@@ -87,7 +87,7 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
 
   return (
     <div className="space-y-8">
-      {/* ===== KPI CARDS (UNCHANGED STRUCTURE) ===== */}
+      {/* ===== KPI CARDS ===== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Kpi
           title="Total Revenue"
@@ -100,60 +100,67 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
         />
       </div>
 
-      {/* ===== CHARTS ===== */}
-<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  {/* Revenue Trend – FULL WIDTH ON TOP */}
-  <ChartCard title="Revenue Trend" full>
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={salesTrend}>
-        <XAxis dataKey="month" stroke="#a1a1aa" />
-        <YAxis stroke="#a1a1aa" />
-        <Tooltip contentStyle={tooltipStyle} />
-        <Line type="monotone" dataKey="revenue" stroke="#f59e0b" />
-      </LineChart>
-    </ResponsiveContainer>
-  </ChartCard>
+      {/* ===== HERO CHART ===== */}
+      <ChartCard title="Revenue Trend">
+        <ResponsiveContainer width="100%" height={360}>
+          <LineChart data={salesTrend}>
+            <XAxis dataKey="month" stroke="#a1a1aa" />
+            <YAxis stroke="#a1a1aa" />
+            <Tooltip contentStyle={tooltipStyle} />
+            <Line
+              type="monotone"
+              dataKey="revenue"
+              stroke="#f59e0b"
+              strokeWidth={2}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </ChartCard>
 
-  {/* Inventory by Department */}
-  <ChartCard title="Inventory by Department">
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={categoryStock}>
-        <XAxis dataKey="category" stroke="#a1a1aa" />
-        <YAxis stroke="#a1a1aa" />
-        <Tooltip contentStyle={tooltipStyle} />
-        <Bar dataKey="stock" fill="#f59e0b" />
-      </BarChart>
-    </ResponsiveContainer>
-  </ChartCard>
+      {/* ===== MIDDLE ROW ===== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Inventory by Department */}
+        <ChartCard title="Inventory by Department">
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={categoryStock}>
+              <XAxis dataKey="category" stroke="#a1a1aa" />
+              <YAxis stroke="#a1a1aa" />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="stock" fill="#f59e0b" />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-  {/* Stock Health */}
-  <ChartCard title="Stock Health">
-    <ResponsiveContainer width="100%" height={300}>
-      <PieChart>
-        <Pie data={stockStatus} dataKey="value" outerRadius={100}>
-          {stockStatus.map((_, i) => (
-            <Cell key={i} fill={COLORS[i]} />
-          ))}
-        </Pie>
-        <Tooltip content={<PieTooltip />} />
-      </PieChart>
-    </ResponsiveContainer>
-  </ChartCard>
-</div>
+        {/* Top Products */}
+        <ChartCard title="Top Selling Products">
+          <ul className="space-y-3">
+            {topProducts.map((p) => (
+              <li
+                key={p._id}
+                className="flex justify-between text-sm text-zinc-300"
+              >
+                <span>{p.title}</span>
+                <span className="font-medium">
+                  {p.unitsSold || 0} sold
+                </span>
+              </li>
+            ))}
+          </ul>
+        </ChartCard>
+      </div>
 
-      {/* ===== TOP PRODUCTS ===== */}
-      <ChartCard title="Top Selling Products">
-        <ul className="space-y-3">
-          {topProducts.map((p) => (
-            <li
-              key={p._id}
-              className="flex justify-between text-sm text-zinc-300"
-            >
-              <span>{p.title}</span>
-              <span className="font-medium">{p.unitsSold || 0} sold</span>
-            </li>
-          ))}
-        </ul>
+      {/* ===== STOCK HEALTH ===== */}
+      <ChartCard title="Stock Health">
+        <ResponsiveContainer width="100%" height={260}>
+          <PieChart>
+            <Pie data={stockStatus} dataKey="value" outerRadius={110}>
+              {stockStatus.map((_, i) => (
+                <Cell key={i} fill={COLORS[i]} />
+              ))}
+            </Pie>
+            <Tooltip content={<PieTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
       </ChartCard>
     </div>
   );
@@ -170,18 +177,17 @@ function Kpi({ title, value }: { title: string; value: any }) {
   );
 }
 
-function ChartCard({ title, children, full }: any) {
+function ChartCard({ title, children }: any) {
   return (
-    <div
-      className={`bg-[#161616] border border-[#2a2a2a] rounded-xl p-6 ${
-        full ? "lg:col-span-2" : ""
-      }`}
-    >
-      <h3 className="text-sm font-medium text-zinc-200 mb-4">{title}</h3>
+    <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-6">
+      <h3 className="text-sm font-medium text-zinc-200 mb-4">
+        {title}
+      </h3>
       {children}
     </div>
   );
 }
+
 function PieTooltip({ active, payload }: any) {
   if (!active || !payload || !payload.length) return null;
 
