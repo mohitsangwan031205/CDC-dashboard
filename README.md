@@ -11,8 +11,8 @@ The application uses secure authentication, server-side rendering, and internal 
 - Secure, cookie-based authentication
 - Protected admin routes
 ## Dummy admin credentials
-email id :- admin@example.com
-password :- admin123
+email id :- admin@dummy.com
+password :- 123dummy
 
 ### 📊 Dashboard Overview
 - Total products count  
