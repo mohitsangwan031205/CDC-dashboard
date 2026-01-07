@@ -101,42 +101,45 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
       </div>
 
       {/* ===== CHARTS ===== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Inventory by Department">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={categoryStock}>
-              <XAxis dataKey="category" stroke="#a1a1aa" />
-              <YAxis stroke="#a1a1aa" />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="stock" fill="#f59e0b" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  {/* Revenue Trend – FULL WIDTH ON TOP */}
+  <ChartCard title="Revenue Trend" full>
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={salesTrend}>
+        <XAxis dataKey="month" stroke="#a1a1aa" />
+        <YAxis stroke="#a1a1aa" />
+        <Tooltip contentStyle={tooltipStyle} />
+        <Line type="monotone" dataKey="revenue" stroke="#f59e0b" />
+      </LineChart>
+    </ResponsiveContainer>
+  </ChartCard>
 
-        <ChartCard title="Stock Health">
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie data={stockStatus} dataKey="value" outerRadius={100}>
-                {stockStatus.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i]} />
-                ))}
-              </Pie>
-              <Tooltip content={<PieTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
+  {/* Inventory by Department */}
+  <ChartCard title="Inventory by Department">
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={categoryStock}>
+        <XAxis dataKey="category" stroke="#a1a1aa" />
+        <YAxis stroke="#a1a1aa" />
+        <Tooltip contentStyle={tooltipStyle} />
+        <Bar dataKey="stock" fill="#f59e0b" />
+      </BarChart>
+    </ResponsiveContainer>
+  </ChartCard>
 
-        <ChartCard title="Revenue Trend" full>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={salesTrend}>
-              <XAxis dataKey="month" stroke="#a1a1aa" />
-              <YAxis stroke="#a1a1aa" />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Line type="monotone" dataKey="revenue" stroke="#f59e0b" />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
+  {/* Stock Health */}
+  <ChartCard title="Stock Health">
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
+        <Pie data={stockStatus} dataKey="value" outerRadius={100}>
+          {stockStatus.map((_, i) => (
+            <Cell key={i} fill={COLORS[i]} />
+          ))}
+        </Pie>
+        <Tooltip content={<PieTooltip />} />
+      </PieChart>
+    </ResponsiveContainer>
+  </ChartCard>
+</div>
 
       {/* ===== TOP PRODUCTS ===== */}
       <ChartCard title="Top Selling Products">
