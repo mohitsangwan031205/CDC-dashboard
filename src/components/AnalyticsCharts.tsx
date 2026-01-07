@@ -15,10 +15,26 @@ import {
   CartesianGrid,
 } from "recharts";
 
-/* Same palette */
+/* Same color palette */
 const COLORS = ["#f59e0b", "#71717a", "#a1a1aa"];
 
-export default function AnalyticsCharts({ products }: { products: any[] }) {
+/* Type definitions */
+type Product = {
+  _id: string;
+  title: string;
+  department: string;
+  unitPrice: number;
+  quantityAvailable: number;
+  unitsSold?: number;
+  createdAt?: string;
+};
+
+type CategoryStock = { name: string; stock: number };
+type RevenueByDept = { name: string; value: number };
+type StockStatus = { name: string; value: number };
+type SalesTrend = { month: string; revenue: number; sortKey: number };
+
+export default function AnalyticsCharts({ products }: { products: Product[] }) {
   /* ================= KPI METRICS ================= */
   const totalRevenue = products.reduce(
     (sum, p) => sum + p.unitPrice * (p.unitsSold || 0),
@@ -35,26 +51,26 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
     0
   );
 
-  /* ================= INVENTORY BY DEPT ================= */
-  const categoryStock = Object.values(
-    products.reduce((acc: any, p) => {
+  /* ================= INVENTORY BY DEPARTMENT ================= */
+  const categoryStock: CategoryStock[] = Object.values(
+    products.reduce((acc: Record<string, CategoryStock>, p) => {
       acc[p.department] ??= { name: p.department, stock: 0 };
       acc[p.department].stock += p.quantityAvailable;
       return acc;
     }, {})
   );
 
-  /* ================= REVENUE BY DEPT (NEW) ================= */
-  const revenueByDept = Object.values(
-    products.reduce((acc: any, p) => {
+  /* ================= REVENUE BY DEPARTMENT ================= */
+  const revenueByDept: RevenueByDept[] = Object.values(
+    products.reduce((acc: Record<string, RevenueByDept>, p) => {
       acc[p.department] ??= { name: p.department, value: 0 };
       acc[p.department].value += p.unitPrice * (p.unitsSold || 0);
       return acc;
     }, {})
   );
 
-  /* ================= STOCK HEALTH ================= */
-  const stockStatus = [
+  /* ================= STOCK STATUS ================= */
+  const stockStatus: StockStatus[] = [
     {
       name: "Healthy",
       value: products.filter((p) => p.quantityAvailable > 10).length,
@@ -72,23 +88,20 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
   ];
 
   /* ================= REVENUE TREND ================= */
-  const salesTrend = Object.values(
-    products.reduce((acc: any, p) => {
+  const salesTrend: SalesTrend[] = Object.values(
+    products.reduce((acc: Record<string, SalesTrend>, p) => {
       if (!p.createdAt) return acc;
       const d = new Date(p.createdAt);
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       acc[key] ??= {
-        month: d.toLocaleString("default", {
-          month: "short",
-          year: "numeric",
-        }),
+        month: d.toLocaleString("default", { month: "short", year: "numeric" }),
         revenue: 0,
         sortKey: d.getTime(),
       };
       acc[key].revenue += p.unitPrice * (p.unitsSold || 0);
       return acc;
     }, {})
-  ).sort((a: any, b: any) => a.sortKey - b.sortKey);
+  ).sort((a, b) => a.sortKey - b.sortKey);
 
   /* ================= TOP PRODUCTS ================= */
   const topProducts = [...products]
@@ -101,10 +114,7 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Kpi title="Total Revenue" value={`₹${totalRevenue.toLocaleString()}`} />
         <Kpi title="Units Sold" value={totalUnitsSold} />
-        <Kpi
-          title="Inventory Value"
-          value={`₹${inventoryValue.toLocaleString()}`}
-        />
+        <Kpi title="Inventory Value" value={`₹${inventoryValue.toLocaleString()}`} />
       </div>
 
       {/* ===== REVENUE TREND ===== */}
@@ -115,20 +125,13 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
             <XAxis dataKey="month" stroke="#a1a1aa" />
             <YAxis stroke="#a1a1aa" />
             <Tooltip contentStyle={tooltipStyle} />
-            <Line
-              type="monotone"
-              dataKey="revenue"
-              stroke="#f59e0b"
-              strokeWidth={3}
-              dot={{ r: 4 }}
-            />
+            <Line type="monotone" dataKey="revenue" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
           </LineChart>
         </ResponsiveContainer>
       </ChartCard>
 
-      {/* ===== ROW 2 ===== */}
+      {/* ===== ROW 2: Inventory + Revenue by Department ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Inventory by Dept */}
         <ChartCard title="Inventory by Department">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={categoryStock}>
@@ -141,7 +144,6 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Revenue by Dept (NEW) */}
         <ChartCard title="Revenue by Department">
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -163,9 +165,8 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
         </ChartCard>
       </div>
 
-      {/* ===== ROW 3 ===== */}
+      {/* ===== ROW 3: Stock Health + Top Products ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Stock Health */}
         <ChartCard title="Stock Health">
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -179,14 +180,10 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Top Products */}
         <ChartCard title="Top Selling Products">
           <ul className="space-y-3">
             {topProducts.map((p) => (
-              <li
-                key={p._id}
-                className="flex justify-between text-sm text-zinc-300"
-              >
+              <li key={p._id} className="flex justify-between text-sm text-zinc-300">
                 <span>{p.title}</span>
                 <span className="font-medium">{p.unitsSold || 0} sold</span>
               </li>
@@ -199,7 +196,6 @@ export default function AnalyticsCharts({ products }: { products: any[] }) {
 }
 
 /* ================= UI HELPERS ================= */
-
 function Kpi({ title, value }: { title: string; value: any }) {
   return (
     <div className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-5">
