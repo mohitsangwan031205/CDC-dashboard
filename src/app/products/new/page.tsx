@@ -13,11 +13,10 @@ import ImageUpload from "@/components/ImageUpload";
 /* Zod Schema */
 /* -------------------- */
 const CATEGORY_OPTIONS = [
-  { value: "electronic", label: "Electronic" },
-  { value: "clothing", label: "Clothing" },
+  { value: "clothes", label: "Clothes" },
   { value: "stationary", label: "Stationary" },
-  { value: "bath essential", label: "Bath Essential" },
-  { value: "beauty", label: "Beauty" },
+  { value: "shoes", label: "Shoes" },
+  { value: "sports", label: "Sports" },
 ];
 
 const productFormSchema = z.object({
